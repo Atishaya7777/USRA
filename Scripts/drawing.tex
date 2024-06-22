@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\begin{document}
+
+% Random distance set = {1, 2, 4}
+\pgfmathdeclarerandomlist{randomdistances}{{1}{2}{4}}
+
+\begin{tikzpicture}
+  \foreach \j in {1,...,10} {
+    % Starting position for each line with padding
+    \coordinate (start) at (0,-\j * 1.75); 
+    \coordinate (end) at (10,-\j * 1.75); 
+    
+    \pgfmathsetseed{\j} % Using \j as random seed
+    \foreach \i in {0,...,9} {
+      \pgfmathrandomitem{\dist}{randomdistances}
+      
+      \pgfmathsetmacro{\xcoord}{\i + \dist}
+      
+      \node[circle, fill, inner sep=2.5pt] at ($(start) + (\xcoord, 0)$) {};
+    }
+  }
+\end{tikzpicture}
+
+\end{document}
