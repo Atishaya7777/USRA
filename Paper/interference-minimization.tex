@@ -13,6 +13,17 @@
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture} 
+\newtheorem{rem}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conj}{Conjecture}[section]
+%
 \title{Interference Minimization on 1D}
 \author{Atishaya Maharjan, Stephane Durocher}
 
@@ -20,11 +31,70 @@
 \maketitle
 
 \begin{abstract}
-Your abstract.
+	This paper delves deep into a FPT interference model first proposed by von Rickenbach et.al. 
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction and Preliminaries}
 
+An \textit{ad-hoc} network is a type of decentralized network that deals with mostly wireless devices with various compnents. Rickenbach, et.al ~\cite{1420165} proposed a framework of using points for devices and creating a connected graph using those points if the radii of transmission of the devices were adequate for data transfer for indicating interference.
+
+We consider all the nodes in a network to be able to transmit and route packets to each other. In order for that to be possible, the resulting communication graph must be connected. In addition, we want to minimize the interference between the various nodes of the network. To model the transmission distance and interference received per node, we adopt the framework given by  Khabbazian, Majid and Durocher, et. al ~\cite{6809218}. Their framework models the transmission of a node $v$ as the radius of transmission $r(v)$ such that every node inside the radius of transmission receives interference of $1$ from $v$. This also means that for any two nodes $u$ and $v$ in the resulting communication graph, they are connected by an edge if and only if $dist(u, v) \leq r(u)$ and $dist(v, u) \leq r(v)$. It is worth noting that this framework heavily adopts the model presented by von Rickenback $et al.$~\cite{1420165} which is related to the \textit{geometric radio network} model of Dessmark and Pelc ~\cite{DessmarkAnders2001Tbka}.
+
+\begin{definition}[Radius of transmission]
+	For a node $v$, the radius of transmission is maximum transmission emitted radially from $v$. It is denoted by $r(v)$.
+\end{definition}
+
+\begin{definition}[Connection Link]
+	Let $u$ and $v$ be two distinct nodes. If both $u$ and $v$ are inside each other's radius of transmission, then we say that there is a connection link between them. Mathematically, if 
+	\begin{align*}
+		dist(u,v) \leq r(u) and dist(v, u) \leq r(v) 
+	\end{align*}
+	then there is a connection link between $u$ and $v$.
+\end{definition}
+
+\begin{definition}[Communication Graph]
+	A communication graph $G = (V, E)$ is a connected graph where $V$ is the set of vertices representing the wireless nodes in space and $E$ is the set of edges representing a connection link between any two vertices $u, v \in V$.
+\end{definition}
+
+The problem statement now is this:
+
+\begin{conjecture}[Interference in 1D is NP-hard]
+	We conjecture that solving the interference problem in 1D is NP-hard in general cases. 
+\end{conjecture}
+
+\begin{conjecture}[There is a better approximation bound for Interference]
+	We conjecture that there exists a better approximation bound for the interference problem than $O(\sqrt[4]{n})$.
+\end{conjecture}
+
+
+\section{Fixed Parameter Tractable (FPT) Problem Instances}
+We know from Buchin ~\cite{buchin2011minimizing}, that the interference problem in 2D is NP-Complete. We also know that the reduction applied to proof of the 2D case is not applicable to the 1D case because of %FILL IN THE REASONS HERE%
+
+As such, it might be better for our intuition to build up several Fixed Parameter Tractable problem instances. The parameter that we will consider will be the distance between the nodes of the connected graph. We will consider the following cases in 1D:
+
+\begin{enumerate}
+	\item 
+\end{enumerate}
+
+\section{NP-Hardness and/or Better Approximation Bound}
+von Rickenbach et al. ~\cite{1420165} utilized a mixture of \textit{HUBS} and \textit{MST} to show that their approximation algorithm produced an upper bound of $O(\sqrt[4]{n})$. Our idea now is to either improve the approximation bound for the 1D case or give a reduction and prove that the 1D case is also NP-Complete.
+
+\section{Open questions and Future work}
+These are our open questions now that we have solved the problem:
+
+\begin{enumerate}
+	\item 
+\end{enumerate}
+
+
+
+%%%% Overall, the paper will have three sections:
+%%%% 1. Abstract - Write this LAST when you have most of the stuff down pat
+%%%% 2. Introduction & Prelimanries - Where you introduce the project and the goals of the project along with past work done (Mention the stuff from Dr. Durocher's slides)
+%%%% 3. Fixed Parameter Tractable (FPT) instance of the problem - The {1, 2}, {1, 2, 4}, {1, 2, 4, 8} distance problem. Maybe if you see a pattern, expand it to powers of 2.
+%%%% 4. NP-Hardness or Approximation Algorithm in 1D - Here you show that it is either NP-hard or you have a better approximation algorithm for the 1D case.
+%%%% 5. Open questions & Future work - Write down any conjectures or future work that you want to do but didn't have time to include.
+ 
 
 %%% Bibliography
 \include{Bibliography}

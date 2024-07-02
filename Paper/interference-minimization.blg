@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99d (TeX Live 2024)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: interference-minimization.aux
+A level-1 auxiliary file: Bibliography.aux
+The style file: plain.bst
+Database file #1: Bibliography.bib
+You've used 4 entries,
+            2118 wiz_defined-function locations,
+            524 strings with 4897 characters,
+and the built_in function-call counts, 1572 in all, are:
+= -- 153
+> -- 66
+< -- 2
++ -- 27
+- -- 22
+* -- 98
+:= -- 243
+add.period$ -- 12
+call.type$ -- 4
+change.case$ -- 23
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 66
+empty$ -- 130
+format.name$ -- 22
+if$ -- 352
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 3
+newline$ -- 22
+num.names$ -- 8
+pop$ -- 31
+preamble$ -- 1
+purify$ -- 19
+quote$ -- 0
+skip$ -- 57
+stack$ -- 0
+substring$ -- 97
+swap$ -- 25
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 16
+warning$ -- 0
+while$ -- 13
+width$ -- 5
+write$ -- 45

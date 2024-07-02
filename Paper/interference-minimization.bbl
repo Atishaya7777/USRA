@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{buchin2011minimizing}
+Kevin Buchin.
+\newblock Minimizing the maximum interference is hard, 2011.
+
+\bibitem{DessmarkAnders2001Tbka}
+Anders Dessmark and Andrzej Pelc.
+\newblock Tradeoffs between knowledge and time of communication in geometric radio networks.
+\newblock In {\em ACM Symposium on Parallel Algorithms and Architectures: Proceedings of the thirteenth annual ACM symposium on Parallel algorithms and architectures}, pages 59--66, New York, NY, USA, 2001. ACM.
+
+\bibitem{6809218}
+Majid Khabbazian, Stephane Durocher, Alireza Haghnegahdar, and Fabian Kuhn.
+\newblock Bounding interference in wireless ad hoc networks with nodes in random position.
+\newblock {\em IEEE/ACM Transactions on Networking}, 23(4):1078--1091, 2015.
+
+\bibitem{1420165}
+P.~von Rickenbach, S.~Schmid, R.~Wattenhofer, and A.~Zollinger.
+\newblock A robust interference model for wireless ad-hoc networks.
+\newblock In {\em 19th IEEE International Parallel and Distributed Processing Symposium}, pages 8 pp.--, 2005.
+
+\end{thebibliography}
