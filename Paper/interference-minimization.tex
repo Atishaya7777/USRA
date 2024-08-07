@@ -12,6 +12,10 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{tikz}
+
+%% Tikz libraries
+\usetikzlibrary{calc}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -31,7 +35,7 @@
 \maketitle
 
 \begin{abstract}
-	This paper delves deep into a FPT interference model first proposed by von Rickenbach et.al. 
+	This paper delves deep into a FPT interference model first proposed by von Rickenbach et.al.
 \end{abstract}
 
 \section{Introduction and Preliminaries}
@@ -45,9 +49,9 @@ We consider all the nodes in a network to be able to transmit and route packets 
 \end{definition}
 
 \begin{definition}[Connection Link]
-	Let $u$ and $v$ be two distinct nodes. If both $u$ and $v$ are inside each other's radius of transmission, then we say that there is a connection link between them. Mathematically, if 
+	Let $u$ and $v$ be two distinct nodes. If both $u$ and $v$ are inside each other's radius of transmission, then we say that there is a connection link between them. Mathematically, if
 	\begin{align*}
-		dist(u,v) \leq r(u) and dist(v, u) \leq r(v) 
+		dist(u,v) \leq r(u) and dist(v, u) \leq r(v)
 	\end{align*}
 	then there is a connection link between $u$ and $v$.
 \end{definition}
@@ -59,7 +63,7 @@ We consider all the nodes in a network to be able to transmit and route packets 
 The problem statement now is this:
 
 \begin{conjecture}[Interference in 1D is NP-hard]
-	We conjecture that solving the interference problem in 1D is NP-hard in general cases. 
+	We conjecture that solving the interference problem in 1D is NP-hard in general cases.
 \end{conjecture}
 
 \begin{conjecture}[There is a better approximation bound for Interference]
@@ -70,10 +74,15 @@ The problem statement now is this:
 \section{Fixed Parameter Tractable (FPT) Problem Instances}
 We know from Buchin ~\cite{buchin2011minimizing}, that the interference problem in 2D is NP-Complete. We also know that the reduction applied to proof of the 2D case is not applicable to the 1D case because of %FILL IN THE REASONS HERE%
 
-As such, it might be better for our intuition to build up several Fixed Parameter Tractable problem instances. The parameter that we will consider will be the distance between the nodes of the connected graph. We will consider the following cases in 1D:
+As such, it might be better for our intuition to build up several Fixed Parameter Tractable problem instances. The parameter that we will consider will be the distance between the nodes of the connected graph. Let the set of the distance parameters be $D$.
+
+We will consider the following cases in 1D:
 
 \begin{enumerate}
-	\item 
+	\item $D = \{1, 2, 4\}$
+	      Some random points in 1D that follow D are:
+	      \include{drawing.tex}
+	      \include{drawing.tex}
 \end{enumerate}
 
 \section{NP-Hardness and/or Better Approximation Bound}
@@ -83,7 +92,7 @@ von Rickenbach et al. ~\cite{1420165} utilized a mixture of \textit{HUBS} and \t
 These are our open questions now that we have solved the problem:
 
 \begin{enumerate}
-	\item 
+	\item
 \end{enumerate}
 
 
@@ -94,7 +103,7 @@ These are our open questions now that we have solved the problem:
 %%%% 3. Fixed Parameter Tractable (FPT) instance of the problem - The {1, 2}, {1, 2, 4}, {1, 2, 4, 8} distance problem. Maybe if you see a pattern, expand it to powers of 2.
 %%%% 4. NP-Hardness or Approximation Algorithm in 1D - Here you show that it is either NP-hard or you have a better approximation algorithm for the 1D case.
 %%%% 5. Open questions & Future work - Write down any conjectures or future work that you want to do but didn't have time to include.
- 
+
 
 %%% Bibliography
 \include{Bibliography}

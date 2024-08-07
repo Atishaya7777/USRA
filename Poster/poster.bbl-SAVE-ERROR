@@ -1,0 +1,143 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{cite:karim}{article}{}
+      \name{author}{3}{}{%
+        {{hash=3fa0b935f88f4de68db48afd02482362}{%
+           family={Abu-Affash},
+           familyi={A\bibinithyphendelim A\bibinitperiod},
+           given={A.\bibnamedelimi Karim},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=bd66ddd85ac5c4c9fd7fad56c6042370}{%
+           family={Carmi},
+           familyi={C\bibinitperiod},
+           given={Paz},
+           giveni={P\bibinitperiod}}}%
+        {{hash=35daaefd027f58d2d348bde1520116ab}{%
+           family={Katz},
+           familyi={K\bibinitperiod},
+           given={Matthew\bibnamedelima J.},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \strng{fullhash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \strng{bibnamehash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \strng{authorbibnamehash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \strng{authornamehash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \strng{authorfullhash}{568bddd0694430fdfb9d2d4d015a7b5c}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0304-3975}
+      \field{journaltitle}{Theoretical Computer Science}
+      \field{title}{Minimizing total interference in asymmetric sensor networks}
+      \field{volume}{889}
+      \field{year}{2021}
+      \field{pages}{171\bibrangedash 181}
+      \range{pages}{11}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.tcs.2021.08.003
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0304397521004461
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0304397521004461
+      \endverb
+    \endentry
+    \entry{cite:buchin}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a18d90eb2238899dc4b4c32c47956381}{%
+           family={Buchin},
+           familyi={B\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{a18d90eb2238899dc4b4c32c47956381}
+      \strng{fullhash}{a18d90eb2238899dc4b4c32c47956381}
+      \strng{bibnamehash}{a18d90eb2238899dc4b4c32c47956381}
+      \strng{authorbibnamehash}{a18d90eb2238899dc4b4c32c47956381}
+      \strng{authornamehash}{a18d90eb2238899dc4b4c32c47956381}
+      \strng{authorfullhash}{a18d90eb2238899dc4b4c32c47956381}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprinttype}{arXiv}
+      \field{title}{Minimizing the Maximum Interference is Hard}
+      \field{year}{2011}
+      \verb{eprint}
+      \verb 0802.2134
+      \endverb
+    \endentry
+    \entry{cite:rickenbach_article}{article}{}
+      \name{author}{3}{}{%
+        {{hash=86c52ccaf7ce4e2ff7786ce073ecf0f0}{%
+           family={Rickenbach},
+           familyi={R\bibinitperiod},
+           given={Pascal},
+           giveni={P\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=5c162b9d03517a96680df0dc8d8263eb}{%
+           family={Wattenhofer},
+           familyi={W\bibinitperiod},
+           given={Roger},
+           giveni={R\bibinitperiod}}}%
+        {{hash=d1efea9c03e72d84bc380b609f609fbc}{%
+           family={Zollinger},
+           familyi={Z\bibinitperiod},
+           given={Aaron},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{8f73777c7214fadd4abf2c4063e9598f}
+      \strng{fullhash}{8f73777c7214fadd4abf2c4063e9598f}
+      \strng{bibnamehash}{8f73777c7214fadd4abf2c4063e9598f}
+      \strng{authorbibnamehash}{8f73777c7214fadd4abf2c4063e9598f}
+      \strng{authornamehash}{8f73777c7214fadd4abf2c4063e9598f}
+      \strng{authorfullhash}{8f73777c7214fadd4abf2c4063e9598f}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE/ACM Transactions on Networking}
+      \field{number}{1}
+      \field{title}{Algorithmic Models of Interference in Wireless Ad Hoc and Sensor Networks}
+      \field{volume}{17}
+      \field{year}{2009}
+      \field{pages}{172\bibrangedash 185}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1109/TNET.2008.926506
+      \endverb
+      \keyw{Wireless sensor networks;Interference;Network topology;Ad hoc networks;Temperature sensors;Biosensors;Energy conservation;Energy consumption;Communication system control;Mobile ad hoc networks;Algorithmic analysis;interference;modeling;network connectivity;network spanners;topology control}
+    \endentry
+  \enddatalist
+  \missing{cite:0}
+  \missing{cite:1}
+  \missing{cite:2}
+  \missing{cite:3}
+  \missing{cite:4}
+  \missing{cite:5}
+\endrefsection
+\endinput
+
