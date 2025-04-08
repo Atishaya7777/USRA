@@ -1,20 +1,20 @@
 \documentclass{article}
 
-% Language setting
-% Replace `english' with e.g. `spanish' to change the document language
 \usepackage[english]{babel}
 
-% Set page size and margins
-% Replace `letterpaper' with `a4paper' for UK/EU standard size
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
-% Useful packages
 \usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{tikz}
+\usepackage{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{tabularx}
+\usepackage{environ}
 
-%% Tikz libraries
 \usetikzlibrary{calc}
 
 \newtheorem{theorem}{Theorem}[section]
@@ -27,7 +27,25 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{conj}{Conjecture}[section]
-%
+
+\makeatletter
+\newcommand{\problemtitle}[1]{\gdef\@problemtitle{#1}}
+\newcommand{\probleminput}[1]{\gdef\@probleminput{#1}}
+\newcommand{\problemquestion}[1]{\gdef\@problemquestion{#1}}
+\NewEnviron{problem}{
+  \problemtitle{}\probleminput{}\problemquestion{}
+  \BODY
+  \par\addvspace{.5\baselineskip}
+  \noindent
+  \begin{tabularx}{\textwidth}{@{\hspace{\parindent}} l X c}
+    \multicolumn{2}{@{\hspace{\parindent}}l}{\@problemtitle} \\
+    \textbf{Input:} & \@probleminput \\
+    \textbf{Question:} & \@problemquestion
+  \end{tabularx}
+  \par\addvspace{.5\baselineskip}
+}
+\makeatother
+
 \title{Interference Minimization on 1D}
 \author{Atishaya Maharjan, Stephane Durocher}
 
@@ -51,7 +69,7 @@ We consider all the nodes in a network to be able to transmit and route packets 
 \begin{definition}[Connection Link]
 	Let $u$ and $v$ be two distinct nodes. If both $u$ and $v$ are inside each other's radius of transmission, then we say that there is a connection link between them. Mathematically, if
 	\begin{align*}
-		dist(u,v) \leq r(u) and dist(v, u) \leq r(v)
+		dist(u,v) \leq r(u) \text{ and } dist(v, u) \leq r(v)
 	\end{align*}
 	then there is a connection link between $u$ and $v$.
 \end{definition}
@@ -76,40 +94,149 @@ We know from Buchin ~\cite{buchin2011minimizing}, that the interference problem 
 
 As such, it might be better for our intuition to build up several Fixed Parameter Tractable problem instances. The parameter that we will consider will be the distance between the nodes of the connected graph. Let the set of the distance parameters be $D$.
 
-We will consider the following cases in 1D:
+\subsection{The distance set is exponential in nature}
+Let $D = \{	d_1, d_2, \dots, d_m\}$ for some $m \in \mathbb{N}$. Then consider the following condition:
 
-\begin{enumerate}
-	\item $D = \{1, 2, 4\}$
-	      Some random points in 1D that follow D are:
-	      \include{drawing.tex}
-	      \include{drawing.tex}
-\end{enumerate}
+\begin{align*}
+	\forall d_i \in D, d_{i+1} = c \cdot d_i \text{ for some constant } c \in \mathcal{O}(1)
+\end{align*}
 
-\section{NP-Hardness and/or Better Approximation Bound}
-von Rickenbach et al. ~\cite{1420165} utilized a mixture of \textit{HUBS} and \textit{MST} to show that their approximation algorithm produced an upper bound of $O(\sqrt[4]{n})$. Our idea now is to either improve the approximation bound for the 1D case or give a reduction and prove that the 1D case is also NP-Complete.
+\noindent We then ask the following decision problem:
+
+\begin{problem}\label{prob:k_inter_min_1d}
+\problemtitle{$k$\textsc{-interference minimization in 1D}}
+\probleminput{Set of points $P$, distance set $D$, interference bound $k$}
+\problemquestion{Is there a connected graph $G = (V, E)$ such that the interference of the graph is less than or equal to $k$?}
+\end{problem}
+
+Is there a connected graph $G = (V, E)$ such that the interference of the graph is less than or equal to $k$?
+\newline
+
+\noindent We give the following algorithm to solve the problem instance:
+\newline
+
+\begin{algorithm}[H]\label{alg:k_inter_min_1d}
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Set of points $P = \{p_1, p_2, \dots, p_n\}$, distance set $D = \{d_1, d_2, \dots, d_m\}$, interference bound $k$}
+	\KwOut{Graph $T$ minimizing interference $\leq k$ or False}
+
+	Initialize $S \gets \{p_1\}$, $T \gets \emptyset$, $I(r) \gets 0$ for all $r \in P$\, and $D' \gets \{d_1, d_2 \in D : d_1 \pm d_2\}$;
+
+	\SetKwFunction{BuildGraph}{BuildGraph}
+	\SetKwProg{Fn}{Function}{:}{}
+
+	\Fn{\BuildGraph{$S, T, I$}}{
+		% NOTE: Base case
+		\If{$S = P$}{
+			\If{$\max_{r \in P} I(r) \leq k$}{
+				\Return $T$ \tcp{Valid solution found}
+			}
+			\Else{
+				\Return False
+			}
+		}
+
+		Select an unconnected point $p \in P \setminus S$\;
+
+		\ForEach{connected point $q \in S$ such that $dist(p, q) \in D'$}{
+			$d \gets |p - q|$\;
+			$A(e) \gets \{ r \in P \mid r \in U_d(p) \cup U_d(q) \}$\;
+
+			\ForEach{$r \in P$}{
+				\eIf{$r \in A(e)$}{
+					$I'(r) \gets I(r) + 1$
+				}{
+					$I'(r) \gets I(r)$
+				}
+			}
+
+			\If{$\max_{r \in P} I'(r) > k$}{
+				Continue \tcp{Prune search tree}
+			}
+
+			$S' \gets S \cup \{p\}$\;
+			$T' \gets T \cup \{(q, p)\}$\;
+
+			\tcp{Recursive call to continue searching}
+			\BuildGraph{$S', T', I'$}\;
+		}
+
+		\Return False \tcp{No valid connections found}
+	}
+\end{algorithm}
+
+\newpage
+% ADD YOUR PROOF OF CORRECTNESS HERE
+\subsection{Analysis of the Algorithm}
+
+NOTE: This does not work for the worst case. Instead, all we can claim is the following:
+
+Let $D' = \{ d_1, d_2 \in D : d_1 \pm d_2 \}$. Note that $0 \in D'$. Then, the algorithm runs in $O(|D'|^k n^c)$ for $c \in O(1)$ time. Note that $|D'| = 2\binom{|D|}{2}$. The relation comes from the fact that we are choosing two distances from $D$ and adding or subtracting them.
+
+Apply the same algorithm but using $D'$ instead of $D$. 
+
+You will have to split it into 2 cases. The first case is when you have your distance set being $D = \{0, c^i\}$ for $i = \{0, 1, 2, \dots \}$ and some constanct $c$. The second case is when you don't have your distance set being $D = \{0, c^i\}$ for $i = \{0, 1, 2, \dots \}$ and some constant $c$, i.e you can't say anything about the structure. In that case, we claim that the maximum interference is just $O\left(\left\lceil\dfrac{\max{D}}{\min{D}}\right\rceil\right)$.
+
+For correctness, all I need to prove is considering both cases, if there exists a solution with the given constraints of the decision problem, then the algorithm will find it.
+
+\begin{defintion}
+	 
+\end{defintion}
+
+\begin{lemma}\label{lem:distance_set_reachable}
+	For any point $p \in P$, all other points $q \in P\setminus \{p\}$ lie at distance $d \in D'$ from $p$.
+\end{lemma}
+
+\begin{lemma}
+	Correctness of Algorithm~\ref{alg:k_inter_min_1d} with respect to the decision problem~\ref{prob:k_inter_min_1d}.
+\end{lemma}
+\begin{proof}
+	$ $
+	\\ \\
+	For correctness of the algorithm, we need to show that if there exists a feasible solution to the decision problem, then the algorithm also will find it. In addition, the algorithm will produce the optimal solution; if it exists. That is, the algorithm will not miss any feasible solutions.
+
+	Note that if we have a distance set, $D = \{0, c^i\}$ for $i = \{0, 1, 2, \dots \}$ for some constant $c$, then we argue that we consider all the possible options for the distances. Consider the first node $p_1$. We claim that we consider all edge connections with the rest of the points of $P$ (barring the last one). Or rather, the argument is that $D'$ considers all possible nodes privy to the distance set $D$ (Barring the last one from the first one). However, we know that there are always better ways of joining the points than joining the first and the last point.
+
+	Invoke Lemma ~\ref{lem:distance_set_reachable} to show that all points are reachable from each other. This shows that we consider all possible connections between the points, although it is a bruteforce solution. However, we still note that the total time complexity does NOT depend on $n$, i.e. does NOT depend on the number of points.
+\end{proof}
+
+\begin{lemma}
+	Running time of Algorithm~\ref{alg:k_inter_min_1d} with respect to the decision problem~\ref{prob:k_inter_min_1d}.
+\end{lemma}
+\begin{proof}
+	$ $
+	\\  \\
+	For the case where $D$ is a set of exponential distances, then the running time will just be a straightforward branching argument. This will yield a total running time of $\left(2\binom{|D|}{2}^k \cdot n^c\right)$ where $c \in O(1)$. 
+
+	Assuming that we have proved the optimal interference for $D$ not being a set of exponential distances is $O\left(\left\lceil\dfrac{\max{D}}{\min{D}}\right\rceil\right)$, then the running time of the algorithm will just be $O(n)$ since it'll just be connecting the nodes in a line.
+\end{proof}
+
+\begin{theorem}
+	Algorithm~\ref{alg:k_inter_min_1d} solves the decision problem~\ref{prob:k_inter_min_1d} in $O\left(2\binom{|D|}{2}^k \cdot n^c\right)$ time where $c \in O(1)$.
+\end{theorem}
+\begin{proof}
+	$ $
+	\\ \\
+\end{proof}
+
+\subsection{The distance set is not exponential in nature}
+Let $D = \{d_1, d_2, \dots, d_m\}$ for some $m \in \mathbb{N}$. Then consider the following condition:
+
+\begin{align*}
+	\forall d_i \in D, d_{i+1} \neq c \cdot d_i \text{ for any constant } c \in \mathcal{O}(1)
+\end{align*}
 
 \section{Open questions and Future work}
 These are our open questions now that we have solved the problem:
 
-\begin{enumerate}
-	\item
-\end{enumerate}
-
-
-
-%%%% Overall, the paper will have three sections:
-%%%% 1. Abstract - Write this LAST when you have most of the stuff down pat
-%%%% 2. Introduction & Prelimanries - Where you introduce the project and the goals of the project along with past work done (Mention the stuff from Dr. Durocher's slides)
-%%%% 3. Fixed Parameter Tractable (FPT) instance of the problem - The {1, 2}, {1, 2, 4}, {1, 2, 4, 8} distance problem. Maybe if you see a pattern, expand it to powers of 2.
-%%%% 4. NP-Hardness or Approximation Algorithm in 1D - Here you show that it is either NP-hard or you have a better approximation algorithm for the 1D case.
-%%%% 5. Open questions & Future work - Write down any conjectures or future work that you want to do but didn't have time to include.
-
+1. Is this problem NP-hard in 1D?
+2. Is there a better approximation bound for the interference problem in 1D?
 
 %%% Bibliography
 \include{Bibliography}
 \bibliographystyle{plain}
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{Bibliography}
-
 
 \end{document}

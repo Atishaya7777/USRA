@@ -1,18 +1,12 @@
 This is BibTeX, Version 0.99d (TeX Live 2024)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: interference-minimization.aux
-A level-1 auxiliary file: drawing.aux
-Already encountered file drawing.aux
----line 16 of file interference-minimization.aux
- : \@input{drawing.aux
- :                    }
-I'm skipping whatever remains of this command
 A level-1 auxiliary file: Bibliography.aux
 The style file: plain.bst
 Database file #1: Bibliography.bib
 You've used 4 entries,
             2118 wiz_defined-function locations,
-            525 strings with 4908 characters,
+            524 strings with 4897 characters,
 and the built_in function-call counts, 1572 in all, are:
 = -- 153
 > -- 66
@@ -51,4 +45,3 @@ warning$ -- 0
 while$ -- 13
 width$ -- 5
 write$ -- 45
-(There was 1 error message)
