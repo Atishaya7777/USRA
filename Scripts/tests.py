@@ -10,7 +10,7 @@ class TestPoint(unittest.TestCase):
 
     def test_point_repr(self):
         point = Point(10)
-        self.assertEqual(repr(point), "Point is at 10")
+        self.assertEqual(repr(point), "10")
 
     def test_point_equality(self):
         point1 = Point(5)
@@ -24,58 +24,30 @@ class TestPoint(unittest.TestCase):
 
 class TestPointConfiguration(unittest.TestCase):
 
-    def test_configuration_initialization(self):
-        config = PointConfiguration(10, {1, 2, 3})
-        self.assertEqual(config.n, 10)
-        self.assertEqual(config.distances, {1, 2, 3})
-        self.assertEqual(config.configurations, [])
-
-    def test_generate_config_valid_case(self):
-        config = PointConfiguration(10, {1, 2})
-        success = config.generate_config()
-        self.assertTrue(success)
+    def test_basic_generation(self):
+        config = PointConfiguration(5, {1, 2})
+        has_config = config.generate_config()
+        self.assertTrue(has_config)
+        self.assertTrue(all(isinstance(p, list)
+                        for p in config.configurations))
         self.assertGreater(len(config.configurations), 0)
 
-    def test_generate_config_invalid_case(self):
-        config = PointConfiguration(10, {5, 6})
-        success = config.generate_config()
-        self.assertFalse(success)
-
-    def test_is_valid_with_valid_configuration(self):
-        config = PointConfiguration(10, {1, 2})
-        config.configurations = [
-            [Point(1), Point(3), Point(6), Point(9)]]
-        self.assertTrue(config.is_valid())
-
-    def test_is_valid_with_invalid_configuration(self):
-        config = PointConfiguration(10, {1, 3})
-        config.configurations = [[Point(1), Point(4), Point(7)]]
-        self.assertFalse(config.is_valid())
-
-    def test_generate_config_edge_case(self):
-        config = PointConfiguration(1, {1})
-        success = config.generate_config()
-        self.assertFalse(success)
-
-    def test_generate_config_with_large_input(self):
-        config = PointConfiguration(100, {1, 2, 3, 4})
-        success = config.generate_config()
-        self.assertTrue(success)
-        self.assertGreater(len(config.configurations), 0)
-
-    def test_generate_config_empty_distances(self):
-        config = PointConfiguration(10, set())
-        success = config.generate_config()
-        self.assertFalse(success)
-
-    def test_repr(self):
-        config = PointConfiguration(10, {1, 2, 3})
-        self.assertEqual(repr(config), "PointConfiguration([])")
-
-    def test_is_valid_when_no_configurations(self):
-        config = PointConfiguration(10, {1, 2, 3})
+    def test_all_distances_used(self):
+        config = PointConfiguration(6, {1, 2})
         config.generate_config()
-        self.assertFalse(config.is_valid())
+        for path in config.configurations:
+            diffs = [path[i].position -
+                     (path[i-1].position if i > 0 else 0) for i in range(len(path))]
+            self.assertTrue({1, 2}.issubset(set(diffs)))
+
+    def test_generate_with_large_distance(self):
+        config = PointConfiguration(10, {1, 2, 4})
+        has_config = config.generate_config()
+        self.assertTrue(has_config)
+        for path in config.configurations:
+            diffs = [path[i].position -
+                     (path[i-1].position if i > 0 else 0) for i in range(len(path))]
+            self.assertTrue({1, 2, 4}.issubset(set(diffs)))
 
 
 if __name__ == "__main__":

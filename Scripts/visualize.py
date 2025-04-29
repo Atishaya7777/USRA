@@ -1,3 +1,4 @@
+import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
 from itertools import combinations
@@ -33,7 +34,7 @@ class Point:
         self.position = position
 
     def __repr__(self):
-        return f"Point is at {self.position}"
+        return f"{self.position}"
 
 
 class PointConfiguration:
@@ -54,103 +55,92 @@ class PointConfiguration:
 
     def generate_config(self) -> bool:
         D = list(self.distances)
-        num_distance: int = len(D)
 
-        def backtrack(
-            index: int, current_a: tuple[int, ...], remaining_length: int
-        ):
-            if index > num_distance - 1:
-                if remaining_length == 0:
-                    yield current_a
+        def backtrack(current_path: list[int], remaining_length: int):
+            if remaining_length <= 0:
+                if self._uses_all_distances(current_path):
+                    yield current_path
                 return
+            for distance in D:
+                if remaining_length >= distance:
+                    yield from backtrack(
+                        current_path + [distance],
+                        remaining_length - distance,
+                    )
 
-            distance = D[index]
-
-            min_possible = (num_distance - index) * distance
-
-            if remaining_length < min_possible:
-                return
-
-            max_ai = remaining_length // distance
-
-            for ai in range(1, max_ai + 1):
-                new_remaining_length = remaining_length - (distance * ai)
-                if new_remaining_length < 0:
-                    break
-                yield from backtrack(
-                    index + 1, current_a + (ai,), new_remaining_length
-                )
-
-        results = backtrack(0, tuple(), self.n - 1)
+        results = backtrack([], self.n)
 
         for result in results:
-            self.configurations.append([Point(x) for x in result])
+            points = []
+            pos = 0
+            for dist in result:
+                pos += dist
+                points.append(Point(pos))
+            self.configurations.append(points)
 
         return len(self.configurations) > 0
+
+    def _uses_all_distances(self, path: list[int]) -> bool:
+        used_distances = set(path)
+        return self.distances.issubset(used_distances)
 
     def __repr__(self):
         return f"PointConfiguration({self.configurations})"
 
 
 class CommunicationGraph:
-    def __init__(self, configuration):
-        self.configuration = configuration
-        self.graph = nx.Graph()
+    def __init__(self, points, distance_set):
+        self.points = points
+        self.n = len(points)
+        self.edges = list(combinations(range(self.n), 2))
+        self.D = distance_set
+        self.graphs = []
+        self.interference_records = []
 
-    def build_graph(self):
-        for point in self.configuration.points:
-            self.graph.add_node(point.position)
-        for p1, p2 in combinations(self.configuration.points, 2):
-            dist = abs(p2.position - p1.position)
-            if dist in self.configuration.distances:
-                self.graph.add_edge(p1.position, p2.position, weight=dist)
+    def generate_all_graphs(self):
+        point_positions = [p.position for p in self.points]
+        all_edges = [(i, j) for i, j in itertools.combinations(point_positions, 2)
+                     if abs(i - j) in self.D]
 
-    def visualize(self):
-        self.build_graph()
-        pos = {point.position: (point.position, 0)
-               for point in self.configuration.points}
-        labels = {point.position: str(point.position)
-                  for point in self.configuration.points}
-        edge_labels = {
-            (p1, p2): f"{data['weight']}" for p1, p2, data in self.graph.edges(data=True)
-        }
+        for subset in itertools.chain.from_iterable(itertools.combinations(all_edges, r) for r in range(len(all_edges) + 1)):
+            G = nx.Graph()
+            G.add_nodes_from(point_positions)
+            G.add_edges_from(subset)
+            interference = self.calculate_interference(G)
+            self.graphs.append((G, interference))
+            self.interference_records.append(interference)
 
-        plt.figure(figsize=(10, 2))
-        nx.draw(self.graph, pos, with_labels=True, labels=labels,
-                node_color='skyblue', node_size=500, font_size=10)
-        nx.draw_networkx_edge_labels(
-            self.graph, pos, edge_labels=edge_labels, font_size=8)
-        plt.title("Communication Graph")
-        plt.xlabel("Position on Line Segment")
-        plt.yticks([])
-        plt.show()
+    def generate_all_connected_graphs(self):
+        for r in range(self.n - 1, len(self.edges) + 1):
+            for edge_set in combinations(self.edges, r):
+                G = nx.Graph()
+                G.add_nodes_from(self.points)
+                G.add_edges_from(edge_set)
+                if nx.is_connected(G):
+                    interference = self.calculate_interference(G)
+                    self.graphs.append((G, interference))
+                    self.interference_records.append(interference)
 
+    def calculate_interference(self, G):
+        interference = {p.position: 0 for p in self.points}
+        for u, v in G.edges():
+            radius = abs(u - v)
+            for p in self.points:
+                if u - radius <= p.position <= u + radius or v - radius <= p.position <= v + radius:
+                    interference[p.position] += 1
+        return interference
 
-n = 10
-D = {1, 2, 4}
+    def max_interference_summary(self):
+        return [max(interf.values()) for _, interf in self.graphs]
 
-
-def generate_all_configurations(n, distances):
-    def backtrack(current_positions, remaining_length):
-        if remaining_length == 0:
-            config = PointConfiguration(
-                [Point(pos) for pos in current_positions], distances)
-            if config.is_valid():
-                configurations.append(config)
-            return
-        for d in distances:
-            if remaining_length - d >= 0:
-                backtrack(current_positions +
-                          [current_positions[-1] + d], remaining_length - d)
-
-    configurations = []
-    backtrack([0], n)
-    return configurations
-
-
-configurations = generate_all_configurations(n, D)
-print(f"Total valid configurations found: {len(configurations)}")
-for config in configurations:
-    print(config)
-    graph = CommunicationGraph(config)
-    # graph.visualize()
+    def get_best_graph(self):
+        min_max = float('inf')
+        best_graph = None
+        best_interf = None
+        for G, interf in self.graphs:
+            curr_max = max(interf.values())
+            if curr_max < min_max:
+                min_max = curr_max
+                best_graph = G
+                best_interf = interf
+        return best_graph, best_interf
