@@ -3,8 +3,33 @@ import networkx as nx
 from itertools import combinations
 
 
+'''
+NOTE: The generating procedural problem can be summarized as follows:
+Let D = {d_1, d_2, ..., d_n}
+Let n be a natural number.
+
+The procedular test case generating algorithm finds all solutions to the
+following linear equation:
+
+a_1d_1 + a_2d_2 + ... + a_nd_n = n - 1
+
+The n - 1 is due to the discrepancy in distance vs points.
+
+For some positive numberes a_1, a_2, ..., a_n.
+
+Let z = n / min(D)
+
+Note that a_1 lies between the range of 1 to z.
+
+For implementation, you will have to check if the resulting equation is still
+equal to n or not.
+'''
+
+
 class Point:
     def __init__(self, position: int):
+        if position < 0:
+            raise ValueError("Position must be a non-negative integer.")
         self.position = position
 
     def __repr__(self):
@@ -12,20 +37,59 @@ class Point:
 
 
 class PointConfiguration:
-    def __init__(self, points: list[Point], distances: set):
-        self.points = sorted(points, key=lambda p: p.position)
+    def __init__(self, n: int, distances: set):
+        self.n = n
         self.distances = distances
+        self.configurations = []
 
     def is_valid(self):
         used_distances = set()
-        for i in range(len(self.points) - 1):
-            dist = self.points[i + 1].position - self.points[i].position
-            if dist in self.distances:
-                used_distances.add(dist)
-        return used_distances == self.distances
+        for config in self.configurations:
+            for i in range(len(config) - 1):
+                dist = config[i + 1].position - config[i].position
+                if dist in self.distances:
+                    used_distances.add(dist)
+
+        return len(used_distances) == len(self.distances)
+
+    def generate_config(self) -> bool:
+        D = list(self.distances)
+        num_distance: int = len(D)
+
+        def backtrack(
+            index: int, current_a: tuple[int, ...], remaining_length: int
+        ):
+            if index > num_distance - 1:
+                if remaining_length == 0:
+                    yield current_a
+                return
+
+            distance = D[index]
+
+            min_possible = (num_distance - index) * distance
+
+            if remaining_length < min_possible:
+                return
+
+            max_ai = remaining_length // distance
+
+            for ai in range(1, max_ai + 1):
+                new_remaining_length = remaining_length - (distance * ai)
+                if new_remaining_length < 0:
+                    break
+                yield from backtrack(
+                    index + 1, current_a + (ai,), new_remaining_length
+                )
+
+        results = backtrack(0, tuple(), self.n - 1)
+
+        for result in results:
+            self.configurations.append([Point(x) for x in result])
+
+        return len(self.configurations) > 0
 
     def __repr__(self):
-        return f"PointConfiguration({self.points})"
+        return f"PointConfiguration({self.configurations})"
 
 
 class CommunicationGraph:
