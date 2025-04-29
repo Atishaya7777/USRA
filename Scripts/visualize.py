@@ -1,5 +1,6 @@
 import itertools
 import matplotlib.pyplot as plt
+from matplotlib.patches import FancyArrowPatch
 import networkx as nx
 from itertools import combinations
 
@@ -132,16 +133,22 @@ class CommunicationGraph:
 
                 if nx.is_connected(G):
                     interference = self.calculate_interference(G)
+                    # print("NEW GRAPH HERE")
                     self.graphs.append((G, interference))
                     self.interference_records.append(interference)
 
     def calculate_interference(self, G):
         interference = {p.position: 0 for p in self.points}
-        for u, v in G.edges():
-            radius = abs(u - v)
-            for p in self.points:
-                if u - radius <= p.position <= u + radius or v - radius <= p.position <= v + radius:
+        for p in self.points:
+            for u, v in G.edges():
+                # print(f"Checking edge ({u}, {v}) for point {p.position}")
+                radius = abs(u - v)
+                if p.position == u:
                     interference[p.position] += 1
+                    continue
+                elif v - radius <= p.position <= v + radius:
+                    interference[p.position] += 1
+
         return interference
 
     def max_interference_summary(self):
@@ -166,12 +173,59 @@ class CommunicationGraph:
         plt.show()
 
     def plot_all_graphs(self):
-        for G, interf in self.graphs:
+        for G in self.graphs:
             self.plot_graph(G)
-            print(f"Interference: {interf}")
 
-    def plot_linear_graph(self, G):
+    def plot_linear_graph(self, G, interf_dict=None):
+        pos = {node: (node, 0) for node in G.nodes()}
+
+        _, ax = plt.subplots()
+
+        nx.draw_networkx_nodes(
+            G, pos, node_color='lightblue', node_size=500, ax=ax)
+        nx.draw_networkx_labels(G, pos, labels={node: str(
+            node) for node in G.nodes()}, ax=ax)
+
+        for i, (u, v) in enumerate(G.edges()):
+            x1, y1 = pos[u]
+            x2, y2 = pos[v]
+            if x1 == x2:
+                continue
+            height = 0.2 + 0.1 * (i % 3)
+            path = FancyArrowPatch((x1, y1), (x2, y2),
+                                   connectionstyle=f"arc3,rad={height}",
+                                   arrowstyle='-', color='gray', lw=1.5,
+                                   mutation_scale=10)
+            ax.add_patch(path)
+
+        if interf_dict:
+            for node, (x, y) in pos.items():
+                interf_num = interf_dict.get(node, None)
+                if interf_num is not None:
+                    ax.text(x, y + 0.25, f"{interf_num}",
+                            fontsize=10, ha='center', color='red', backgroundcolor='none')
+
+        ax.set_aspect('equal')
+        ax.axis('off')
+        plt.tight_layout()
+        plt.show()
+
+    def plot_linear_graph_old(self, G, interf_dict=None):
         pos = {node: (node, 0) for node in G.nodes()}
         nx.draw(G, pos, with_labels=True, node_color='lightblue',
                 node_size=500, font_size=10)
+
+        print(f"GRAPH EDGES:\n{G.edges()}")
+
+        if interf_dict:
+            for node, (x, y) in pos.items():
+                interference = interf_dict[node]
+                print(f"Interference for node {node}: {interference}")
+                print(f"Position: ({x}, {y})")
+                plt.text(x, y + 0.005, f"{interference}",
+                         fontsize=12)
         plt.show()
+
+    def plot_all_graphs_linear(self):
+        for G, interf in self.graphs:
+            self.plot_linear_graph(G, interf)
