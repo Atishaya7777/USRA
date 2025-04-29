@@ -92,10 +92,20 @@ class CommunicationGraph:
     def __init__(self, points, distance_set):
         self.points = points
         self.n = len(points)
-        self.edges = list(combinations(range(self.n), 2))
         self.D = distance_set
         self.graphs = []
         self.interference_records = []
+        self.edges = self.generate_edges()
+
+    def generate_edges(self):
+        valid_edges = []
+
+        for i in range(len(self.points)):
+            for j in range(i + 1, len(self.points)):
+                valid_edges.append(
+                    (self.points[i].position, self.points[j].position))
+
+        return valid_edges
 
     def generate_all_graphs(self):
         point_positions = [p.position for p in self.points]
@@ -111,11 +121,15 @@ class CommunicationGraph:
             self.interference_records.append(interference)
 
     def generate_all_connected_graphs(self):
+        # r = n - 1 (A tree) to n choose 2 (A complete graph) - By default,
+        # we have n choose 2 edges by construction
         for r in range(self.n - 1, len(self.edges) + 1):
             for edge_set in combinations(self.edges, r):
                 G = nx.Graph()
-                G.add_nodes_from(self.points)
+                for v in self.points:
+                    G.add_node(v.position)
                 G.add_edges_from(edge_set)
+
                 if nx.is_connected(G):
                     interference = self.calculate_interference(G)
                     self.graphs.append((G, interference))
@@ -144,3 +158,20 @@ class CommunicationGraph:
                 best_graph = G
                 best_interf = interf
         return best_graph, best_interf
+
+    def plot_graph(self, G):
+        pos = nx.spring_layout(G)
+        nx.draw(G, pos, with_labels=True, node_color='lightblue',
+                node_size=500, font_size=10)
+        plt.show()
+
+    def plot_all_graphs(self):
+        for G, interf in self.graphs:
+            self.plot_graph(G)
+            print(f"Interference: {interf}")
+
+    def plot_linear_graph(self, G):
+        pos = {node: (node, 0) for node in G.nodes()}
+        nx.draw(G, pos, with_labels=True, node_color='lightblue',
+                node_size=500, font_size=10)
+        plt.show()
